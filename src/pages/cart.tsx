@@ -10,6 +10,7 @@ import { Breadcrumb, EmptyState, ErrorState, NftCard, NftCardSkeleton, QuantityS
 import { formatEth } from '@/lib/eth'
 import { useCart, useCartMutations, useNfts, useQuote } from '@/lib/hooks'
 import { useSession } from '@/lib/session'
+import { asset } from '@/lib/base'
 
 const COLS = 'sm:grid sm:grid-cols-[minmax(0,1fr)_88px_92px_96px_32px] sm:items-center sm:gap-4'
 
@@ -49,7 +50,7 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 xl:px-0">
-      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: '/#catalogo' }, { label: 'Carrinho' }]} />
+      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: asset('#catalogo') }, { label: 'Carrinho' }]} />
       <h1 className="sr-only">Carrinho de NFTs</h1>
       {cart.isLoading ? (
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_332px]" aria-busy="true"><ul className="flex flex-col gap-3"><LineSkeleton /><LineSkeleton /></ul><SummarySkeleton /></div>

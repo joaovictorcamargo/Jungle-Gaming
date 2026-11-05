@@ -11,6 +11,7 @@ import { FEATURED_QUERY, useNfts } from '@/lib/hooks'
 import { categoryLabel, networkLabel, sortLabel } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { HomeSearch } from '@/router'
+import { asset } from '@/lib/base'
 
 const route = getRouteApi('/')
 const PAGE_SIZE = 9
@@ -126,12 +127,12 @@ const posts = [
   ['15 de setembro', '2 min', 'Como proteger sua carteira', 'Proteja sua carteira, seus ativos e sua identidade.'],
 ] as const
 
-const BLOG_IMAGES = ['/nfts/ape-3.webp', '/nfts/ape-1.webp', '/nfts/ape-2.webp', '/nfts/ape-4.webp']
+const BLOG_IMAGES = [3, 1, 2, 4].map((n) => asset(`nfts/ape-${n}.webp`))
 
 function Promos() {
   const items = [
-    ['Lançamentos gênesis de edição limitada', 'Colecione edições escassas diretamente dos criadores antes da revelação pública.', '/nfts/ape-1.webp'],
-    ['Arte digital selecionada e muito mais', 'Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.', '/nfts/ape-3.webp'],
+    ['Lançamentos gênesis de edição limitada', 'Colecione edições escassas diretamente dos criadores antes da revelação pública.', asset('nfts/ape-1.webp')],
+    ['Arte digital selecionada e muito mais', 'Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.', asset('nfts/ape-3.webp')],
   ]
   return (
     <section id="promocoes" aria-label="Promoções" className="mt-24 grid scroll-mt-24 gap-6 [contain-intrinsic-size:auto_520px] [content-visibility:auto] lg:grid-cols-2 lg:[contain-intrinsic-size:auto_250px]">
@@ -209,7 +210,7 @@ export default function HomePage() {
           <Button asChild className="hidden w-[140px] text-base md:inline-flex"><a href="#catalogo">EXPLORAR</a></Button>
           <span aria-hidden="true" className="hidden gap-2 md:flex md:self-end"><i className="h-2 w-2 rounded-full bg-primary" /><i className="h-2 w-2 rounded-full bg-primary/60" /><i className="h-2 w-2 rounded-full bg-primary/30" /></span>
         </div>
-        <img src="/nfts/ape-1.webp" alt="" width={450} height={450} fetchPriority="high" className="aspect-square w-1/2 max-w-[188px] shrink-0 rounded-2xl object-cover sm:w-[220px] sm:max-w-none md:w-[450px] md:rounded-3xl" />
+        <img src={asset('nfts/ape-1.webp')} alt="" width={450} height={450} fetchPriority="high" className="aspect-square w-1/2 max-w-[188px] shrink-0 rounded-2xl object-cover sm:w-[220px] sm:max-w-none md:w-[450px] md:rounded-3xl" />
       </section>
 
       <section id="catalogo" aria-labelledby="catalogo-titulo" className="mt-8 scroll-mt-24 md:mt-24">

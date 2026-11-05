@@ -9,6 +9,7 @@ import { useCart } from '@/lib/hooks'
 import { useSession } from '@/lib/session'
 import { logout } from '@/lib/useAuthActions'
 import { connectSocket, useSocketStatus } from '@/realtime/socket'
+import { asset } from '@/lib/base'
 
 function Brand() {
   return <Link to="/" className="text-sm font-bold tracking-[0.1em] text-fg">KURIO</Link>
@@ -21,9 +22,9 @@ function NavLinks({ onNavigate, vertical }: { onNavigate?: () => void; vertical?
   const market = MARKET.test(path)
   const items: { label: string; href: string; active: boolean }[] = [
     { label: 'Início', href: '/', active: !market },
-    { label: 'Mercado', href: '/#catalogo', active: market },
-    { label: 'Criadores', href: '/#promocoes', active: false },
-    { label: 'Aprenda', href: '/#blog', active: false },
+    { label: 'Mercado', href: asset('#catalogo'), active: market },
+    { label: 'Criadores', href: asset('#promocoes'), active: false },
+    { label: 'Aprenda', href: asset('#blog'), active: false },
   ]
   return (
     <>
@@ -64,7 +65,7 @@ function Header() {
         </div>
         <nav aria-label="Principal" className="hidden items-center gap-10 md:flex"><NavLinks /></nav>
         <div className="flex items-center gap-3 md:gap-5">
-          <a href="/#busca" className="hidden h-10 w-10 place-items-center text-fg hover:text-primary-soft sm:grid" aria-label="Pesquisar no catálogo"><Search aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} /></a>
+          <a href={asset('#busca')} className="hidden h-10 w-10 place-items-center text-fg hover:text-primary-soft sm:grid" aria-label="Pesquisar no catálogo"><Search aria-hidden="true" className="h-5 w-5" strokeWidth={1.8} /></a>
           <CartLink count={count} />
           {status === 'authenticated' ? (
             <>
@@ -105,7 +106,7 @@ function BottomNav() {
     <nav aria-label="Atalhos" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur md:hidden">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-6">
         <Link to="/" className={cn(item, path === '/' && 'text-primary-soft')} aria-label="Início"><House aria-hidden="true" className="h-5 w-5" /></Link>
-        <a href="/#catalogo" className={item} aria-label="Mercado"><LayoutGrid aria-hidden="true" className="h-5 w-5" /></a>
+        <a href={asset('#catalogo')} className={item} aria-label="Mercado"><LayoutGrid aria-hidden="true" className="h-5 w-5" /></a>
         <CartLink count={count} className={cn('h-12 w-12', path === '/carrinho' && 'text-primary-soft')} />
         <Link to="/perfil" className={cn(item, path === '/perfil' && 'text-primary-soft')} aria-label="Meu perfil"><UserRound aria-hidden="true" className="h-5 w-5" /></Link>
       </div>

@@ -73,5 +73,5 @@ const stringifySearch = (o: Record<string, unknown>) => {
   return s ? `?${s}` : ''
 }
 
-export const router = createRouter({ routeTree, parseSearch, stringifySearch, defaultPreload: 'intent', scrollRestoration: true })
+export const router = createRouter({ routeTree, basepath: import.meta.env.BASE_URL.replace(/\/$/, '') || '/', parseSearch, stringifySearch, defaultPreload: 'intent', scrollRestoration: true })
 declare module '@tanstack/react-router' { interface Register { router: typeof router } }

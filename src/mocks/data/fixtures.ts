@@ -1,5 +1,6 @@
 import type { Category, Edition, NetworkId, NftReview, Wallet } from '@/api/types'
 import { fromWei, toWei } from '@/lib/eth'
+import { asset } from '@/lib/base'
 
 /** PRNG determinístico (mulberry32) para fixtures reproduzíveis. */
 function rng(seed: number) {
@@ -88,9 +89,9 @@ export function buildNfts(): NftRecord[] {
       category: CATEGORIES[(i * 3 + 1) % CATEGORIES.length]!,
       network: NETWORKS[(i * 7 + 2) % NETWORKS.length]!,
       price,
-      image: `/nfts/ape-${art}.webp`,
+      image: asset(`nfts/ape-${art}.webp`),
       // Galeria: a arte do NFT seguida das demais artes da coleção (4 vistas, como no Figma).
-      gallery: [art, ...[1, 2, 3, 4].filter((a) => a !== art)].map((a) => `/nfts/ape-${a}.webp`),
+      gallery: [art, ...[1, 2, 3, 4].filter((a) => a !== art)].map((a) => asset(`nfts/ape-${a}.webp`)),
       description:
         'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
       tokenId: String(n * 7 + 35).padStart(4, '0'),
@@ -128,8 +129,8 @@ export async function sha256(text: string): Promise<string> {
 
 export async function buildUsers(): Promise<UserRecord[]> {
   return [
-    { id: 'u1', name: 'Ana Colecionadora', email: 'ana@example.com', bio: 'Colecionando arte digital desde 2021.', avatarUrl: '/avatars/ana.svg', passwordHash: await sha256('Senha@123') },
-    { id: 'u2', name: 'Bruno Minter', email: 'bruno@example.com', bio: 'Curador de coleções generativas.', avatarUrl: '/avatars/bruno.svg', passwordHash: await sha256('Senha@456') },
+    { id: 'u1', name: 'Ana Colecionadora', email: 'ana@example.com', bio: 'Colecionando arte digital desde 2021.', avatarUrl: asset('avatars/ana.svg'), passwordHash: await sha256('Senha@123') },
+    { id: 'u2', name: 'Bruno Minter', email: 'bruno@example.com', bio: 'Curador de coleções generativas.', avatarUrl: asset('avatars/bruno.svg'), passwordHash: await sha256('Senha@456') },
   ]
 }
 

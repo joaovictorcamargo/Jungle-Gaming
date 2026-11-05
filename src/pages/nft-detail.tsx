@@ -12,6 +12,7 @@ import { formatEth } from '@/lib/eth'
 import { networkLabel } from '@/lib/format'
 import { useCartMutations, useNft, useNfts } from '@/lib/hooks'
 import { cn } from '@/lib/utils'
+import { asset } from '@/lib/base'
 
 function DetailSkeleton() {
   return (
@@ -171,7 +172,7 @@ export default function NftDetailPage() {
   const notFound = isApiError(q.error) && q.error.status === 404
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 xl:px-0">
-      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: '/#catalogo' }, ...(q.data ? [{ label: q.data.title }] : [])]} />
+      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: asset('#catalogo') }, ...(q.data ? [{ label: q.data.title }] : [])]} />
       {q.isLoading ? <DetailSkeleton /> : notFound ? (
         <EmptyState title="NFT não encontrado"><p>O NFT “{nftId}” não existe ou foi removido.</p><Button asChild className="mt-4"><Link to="/">Explorar catálogo</Link></Button></EmptyState>
       ) : q.error && !q.data ? <ErrorState error={q.error} onRetry={() => void q.refetch()} title="Não foi possível carregar este NFT" /> : q.data ? <Detail nft={q.data} key={q.data.id} /> : null}

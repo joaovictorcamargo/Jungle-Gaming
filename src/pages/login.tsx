@@ -27,7 +27,7 @@ export default function LoginPage() {
     if (!password) errs.password = 'Informe sua senha.'
     if (!f.setLocal(errs)) return
     setBusy(true)
-    try { await login({ email, password }); router.history.push(search.redirect ?? '/') }
+    try { await login({ email, password }); void router.navigate({ href: search.redirect ?? '/' }) }
     catch (err) { f.fromApi(err) }
     finally { setBusy(false) }
   }

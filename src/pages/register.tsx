@@ -29,7 +29,7 @@ export default function RegisterPage() {
     else if (confirm !== v.password) errs.confirm = 'As senhas não coincidem.'
     if (!f.setLocal(errs)) return
     setBusy(true)
-    try { await register(v); router.history.push(search.redirect ?? '/') }
+    try { await register(v); void router.navigate({ href: search.redirect ?? '/' }) }
     catch (err) { f.fromApi(err) }
     finally { setBusy(false) }
   }

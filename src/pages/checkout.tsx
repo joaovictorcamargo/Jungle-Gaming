@@ -18,6 +18,7 @@ import { qk } from '@/lib/query'
 import { useSession } from '@/lib/session'
 import { useSocketStatus } from '@/realtime/socket'
 import { cn } from '@/lib/utils'
+import { asset } from '@/lib/base'
 
 type ConnState = { status: 'idle' | 'connecting' | 'connected'; walletId?: string; error?: string }
 
@@ -113,7 +114,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6 xl:px-0">
-      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: '/#catalogo' }, { label: 'Pagamento' }]} />
+      <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Mercado', href: asset('#catalogo') }, { label: 'Pagamento' }]} />
       <h1 className="sr-only">Pagamento</h1>
       {hasAttempt(uid) && !place.isPending && !submitError && <p role="status" className="mt-4 rounded-[3px] border border-warning/60 bg-surface px-4 py-3 text-sm">Encontramos uma tentativa de envio anterior sem resposta. Ao confirmar novamente com os mesmos dados, ela será recuperada sem duplicar a compra.</p>}
       <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,763px)_405px] lg:justify-between">

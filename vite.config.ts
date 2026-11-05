@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 export default defineConfig({
+  // Caminho-base da publicação: `/` por padrão; `BASE_PATH=/Jungle-Gaming/` para o GitHub Pages.
+  base: process.env.BASE_PATH ?? '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

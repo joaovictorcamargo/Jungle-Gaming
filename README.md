@@ -104,9 +104,10 @@ A build publicada inclui o service worker do MSW (`/mockServiceWorker.js`) e o S
 
 - **Vercel:** `npx vercel --prod` na raiz (ou importar o repositório: framework *Vite*, `npm run build`, saída `dist`). `vercel.json` já define o fallback de SPA e o cache de assets.
 - **Netlify (sem CLI):** `npm ci && npm run build` e arraste a pasta `dist/` em <https://app.netlify.com/drop>. O arquivo `public/_redirects` (copiado para `dist/`) faz o fallback `/* → /index.html 200`; arquivos existentes, como o service worker, continuam sendo servidos diretamente.
+- **GitHub Pages (publicação atual):** `npm run build:pages` gera `dist-pages/` com caminho-base `/Jungle-Gaming/`, `404.html` (fallback de SPA para acesso direto e refresh) e `.nojekyll`; o conteúdo vai para o branch `gh-pages`. Todos os caminhos públicos (imagens, service worker do MSW, rotas) respeitam `import.meta.env.BASE_URL` (`src/lib/base.ts`). No GitHub Pages, rotas acessadas diretamente respondem com status 404 servindo a app (limitação da plataforma); a navegação funciona normalmente.
 - **Cloudflare Pages:** mesmo comando de build, saída `dist`; o `_redirects` também é respeitado.
 
-URL pública: _preencher após o deploy_.
+URL pública: **https://joaovictorcamargo.github.io/Jungle-Gaming/**
 
 ## Documentação
 Contratos REST e de eventos, política de sessão, carrinho, cache, reconciliação REST × Socket.IO, limitações e desvios do Figma: **[ARCHITECTURE.md](./ARCHITECTURE.md)**.

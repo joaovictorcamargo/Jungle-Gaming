@@ -1,5 +1,6 @@
 node_modules
 dist
+dist-pages
 playwright-report
 test-results
 # Relatórios por execução: versiona o resumo e os HTML; os JSON brutos ficam fora

@@ -13,7 +13,8 @@
     "test:e2e:update": "playwright test --update-snapshots",
     "lighthouse": "node lighthouse/run.mjs",
     "test:e2e:report": "playwright show-report",
-    "assets": "node scripts/generate-assets.mjs"
+    "assets": "node scripts/generate-assets.mjs",
+    "build:pages": "tsc -b && BASE_PATH=/Jungle-Gaming/ VITE_ENABLE_MOCKS=true vite build --outDir dist-pages && cp dist-pages/index.html dist-pages/404.html && touch dist-pages/.nojekyll"
   },
   "dependencies": {
     "@fontsource-variable/roboto-mono": "^5.3.0",

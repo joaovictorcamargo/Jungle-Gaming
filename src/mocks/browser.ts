@@ -5,6 +5,7 @@ import * as db from './db'
 import * as sock from './socket'
 import { DEMO_CREDENTIALS } from './data/fixtures'
 import { SCENARIO_PRESETS, type Scenario } from './scenarios'
+import { asset } from '@/lib/base'
 
 /** Controles expostos em `window.__mocks` para demonstração e testes (cenários, reset, disparo de eventos). */
 const controls = {
@@ -32,7 +33,7 @@ declare global { interface Window { __mocks?: MockControls } }
 export async function startMocks() {
   const worker = setupWorker(...handlers, socketHandler)
   // Banco simulado e service worker sobem em paralelo; as requisições só saem depois dos dois (backendReady).
-  await Promise.all([db.initDb(), worker.start({ onUnhandledRequest: 'bypass', quiet: true, serviceWorker: { url: '/mockServiceWorker.js' } })])
+  await Promise.all([db.initDb(), worker.start({ onUnhandledRequest: 'bypass', quiet: true, serviceWorker: { url: asset('mockServiceWorker.js') } })])
   window.__mocks = controls
   // Resolve pedidos pendentes vencidos e emite order.updated (também após refresh).
   setInterval(() => db.settleDueOrders(), 400)
