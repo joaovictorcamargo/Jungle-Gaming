@@ -1,0 +1,8 @@
+node_modules
+dist
+playwright-report
+test-results
+# Relatórios por execução: versiona o resumo e os HTML; os JSON brutos ficam fora
+lighthouse/reports/*.json
+!lighthouse/reports/summary.json
+*.local

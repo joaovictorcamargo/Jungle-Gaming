@@ -1,0 +1,57 @@
+import { expect, test } from '@playwright/test'
+import { boot, login } from './helpers'
+
+test('perfil: validação, edição, avatar e senha', async ({ page }) => {
+  await boot(page)
+  await login(page)
+  await page.goto('/perfil')
+  await page.getByLabel('Nome', { exact: true }).fill('')
+  await page.getByRole('button', { name: 'Salvar alterações' }).click()
+  await expect(page.getByText('Informe seu nome.')).toBeVisible()
+  await page.getByLabel('Nome', { exact: true }).fill('Ana Atualizada')
+  await page.getByLabel('E-mail').first().fill('bruno@example.com') // conflito vindo da API
+  await page.getByRole('button', { name: 'Salvar alterações' }).click()
+  await expect(page.getByText('Este e-mail já está em uso.')).toBeVisible()
+  await page.getByLabel('E-mail').first().fill('ana@example.com')
+  await page.getByRole('button', { name: 'Salvar alterações' }).click()
+  await expect(page.getByText('Perfil atualizado.')).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Nome', { exact: true })).toHaveValue('Ana Atualizada')
+
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64')
+  await page.locator('#avatar-input').setInputFiles({ name: 'a.png', mimeType: 'image/png', buffer: png })
+  await expect(page.getByText('Avatar atualizado.')).toBeVisible()
+  await page.locator('#avatar-input').setInputFiles({ name: 'doc.txt', mimeType: 'text/plain', buffer: Buffer.from('x') })
+  await expect(page.getByText('O arquivo deve ser uma imagem.')).toBeVisible()
+
+  await page.getByLabel('Senha atual').fill('errada123')
+  await page.getByLabel('Nova senha', { exact: true }).fill('Nova@1234')
+  await page.getByLabel('Confirmar nova senha').fill('Nova@1234')
+  await page.getByRole('button', { name: 'Alterar senha' }).click()
+  await expect(page.getByText('Senha atual incorreta.')).toBeVisible()
+  await page.getByLabel('Senha atual').fill('Senha@123')
+  await page.getByRole('button', { name: 'Alterar senha' }).click()
+  await expect(page.getByText('Senha alterada com sucesso.')).toBeVisible()
+  await page.getByRole('button', { name: 'Sair' }).click()
+  await login(page, 'ana@example.com', 'Nova@1234') // nova senha vale
+})
+
+test('carteiras: cadastro, edição e validação', async ({ page }) => {
+  await boot(page)
+  await login(page, 'bruno@example.com', 'Senha@456')
+  await page.goto('/carteiras')
+  await page.getByTestId('wallet-secondary').getByRole('button', { name: /Adicionar carteira/ }).click()
+  await page.getByLabel('Nome da carteira').fill('Reserva')
+  await page.getByLabel('Endereço').fill('0x123')
+  await page.getByRole('button', { name: 'Salvar' }).click()
+  await expect(page.getByText(/Endereço inválido/)).toBeVisible()
+  await page.getByLabel('Endereço').fill('0x2546BcD3c84621e976D8185a91A922aE77ECEc30')
+  await page.getByRole('button', { name: 'Salvar' }).click()
+  await expect(page.getByText('Carteira cadastrada.')).toBeVisible()
+  await page.reload()
+  await expect(page.getByTestId('wallet-secondary')).toContainText('Reserva')
+  await page.getByTestId('wallet-primary').getByRole('button', { name: 'Editar' }).click()
+  await page.getByLabel('Nome da carteira').fill('Principal renomeada')
+  await page.getByRole('button', { name: 'Salvar' }).click()
+  await expect(page.getByTestId('wallet-primary')).toContainText('Principal renomeada')
+})

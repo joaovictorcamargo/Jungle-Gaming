@@ -1,0 +1,198 @@
+{
+  "env": {
+    "node": "v22.23.4",
+    "lighthouse": "13.6.0",
+    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "platform": "linux 6.18.44-fc-v236",
+    "cpus": 2,
+    "runs": 3,
+    "url": "http://localhost:4173",
+    "mocks": "cenário padrão (default)"
+  },
+  "results": {
+    "home/mobile": {
+      "median": {
+        "performance": 78,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 3064,
+      "cls": 0,
+      "tbtMs": 658,
+      "runs": [
+        {
+          "scores": {
+            "performance": 80,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3064.3228,
+          "cls": 0,
+          "tbt": 574.3924
+        },
+        {
+          "scores": {
+            "performance": 78,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 2922.9126,
+          "cls": 0,
+          "tbt": 687.6958
+        },
+        {
+          "scores": {
+            "performance": 77,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3096.68925,
+          "cls": 0,
+          "tbt": 657.77025
+        }
+      ]
+    },
+    "home/desktop": {
+      "median": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 757,
+      "cls": 0,
+      "tbtMs": 26,
+      "runs": [
+        {
+          "scores": {
+            "performance": 100,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 757.25235,
+          "cls": 0.0001747755539856795,
+          "tbt": 26
+        },
+        {
+          "scores": {
+            "performance": 100,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 662.9735499999999,
+          "cls": 0.0001747755539856795,
+          "tbt": 7.5
+        },
+        {
+          "scores": {
+            "performance": 100,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 806.9358500000001,
+          "cls": 0.0001747755539856795,
+          "tbt": 28
+        }
+      ]
+    },
+    "detail/mobile": {
+      "median": {
+        "performance": 81,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 3457,
+      "cls": 0,
+      "tbtMs": 418,
+      "runs": [
+        {
+          "scores": {
+            "performance": 83,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3457.2365,
+          "cls": 0,
+          "tbt": 359.77634999999987
+        },
+        {
+          "scores": {
+            "performance": 78,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3488.7088,
+          "cls": 0,
+          "tbt": 513.8228
+        },
+        {
+          "scores": {
+            "performance": 81,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 3455.46925,
+          "cls": 0,
+          "tbt": 418.4469250000001
+        }
+      ]
+    },
+    "detail/desktop": {
+      "median": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 907,
+      "cls": 0,
+      "tbtMs": 13,
+      "runs": [
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 842.4107250000001,
+          "cls": 0,
+          "tbt": 0
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 967.9378750000001,
+          "cls": 0,
+          "tbt": 13
+        },
+        {
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "lcp": 907.2805,
+          "cls": 0,
+          "tbt": 14
+        }
+      ]
+    }
+  }
+}

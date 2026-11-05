@@ -1,82 +1,112 @@
-# KURIO — Jungle Frontend Challenge
+# KURIO · Marketplace de NFTs — Desafio Frontend (Jungle Gaming)
 
-React + TypeScript marketplace implementation for the Jungle Gaming frontend challenge. All purchases, wallets and transactions are fictional. There is no blockchain or payment gateway integration.
+Marketplace de NFTs em **React + TypeScript** com descoberta, compra e conta do colecionador, versões desktop/mobile,
+**MSW** (REST + Socket.IO), **TanStack Router/Query**, **Axios**, **Tailwind + shadcn/ui (Radix)**, **Playwright** e **Lighthouse**.
+Tudo roda com dados simulados: não há backend, blockchain, carteira ou gateway reais.
+O visual segue o arquivo do Figma (marca KURIO, tokens da coleção *Design Tokens*, Roboto Mono e os retratos de NFT do próprio arquivo).
 
-## Current delivery status
+| Responsabilidade | Tecnologia |
+|---|---|
+| Interface / linguagem | React 19 · TypeScript (strict) |
+| Rotas e parâmetros de busca | TanStack Router |
+| Estado remoto | TanStack Query |
+| HTTP | Axios (`src/api/client.ts`) |
+| Tempo real | `socket.io-client` (real) |
+| Estilo / componentes | Tailwind CSS 4 · padrão shadcn/ui (Radix + `cva`) em `src/components/ui` |
+| Mocking | MSW 2 + `@mswjs/socket.io-binding` |
+| E2E e regressão visual | Playwright (Chromium) |
+| Performance | Lighthouse |
 
-The KURIO identity, Roboto Mono typography, copper/brown palette, original NFT images and responsive catalog are now adapted from the accessible Figma copy. Original image/SVG files are bundled locally in `public/figma` (no expiring remote image URLs). Functional commerce and account flows are retained.
+## Setup
 
-Public demo: https://jungle-nft-joao-challenge.comet-stork-3593.chatgpt.site
-
-Functional desktop/mobile Playwright execution is now available using the bundled Linux browser fallback. Results, reviewed regression references and Lighthouse measurements are documented in `docs/VERIFICATION.md`. Desktop profile/registration remain unverified against their Figma frames because the Starter MCP quota still blocks retrieval. This is not a claim of complete pixel identity. Lighthouse medians: desktop performance 96/96 (home/detail), mobile 71/84; mobile performance is below the target of 90. Accessibility, best practices and SEO meet the specified thresholds.
-
-## Run from a clean checkout
-
-Node.js 22+ (developed on Node 24), npm.
-
-```sh
+```bash
 npm ci
-npm run dev
+npm run dev        # desenvolvimento com mocks (http://localhost:5173)
+npm run build      # typecheck + build de produção COM mocks (build de demonstração)
+npm run preview    # serve dist/ em http://localhost:4173
+npm run typecheck && npm run lint
+npm run test:e2e   # builda, sobe o preview e roda Playwright (desktop 1440 + mobile 390)
+npm run lighthouse # requer `npm run preview` ativo; escreve lighthouse/reports/
 ```
 
-Open the localhost URL printed by Vite. Service workers and Web Crypto require HTTPS or `localhost`. An arbitrary HTTP hostname will not work. Mocks are enabled by default in development **and production**. Set `VITE_ENABLE_MOCKS=false` only when supplying compatible real endpoints.
+Requisitos: Node ≥ 20. Para Playwright: `npx playwright install chromium`. Em ambientes sem acesso ao CDN,
+use `CHROMIUM_PATH=/caminho/chrome npm run test:e2e` e `CHROME_PATH=/caminho/chrome npm run lighthouse`.
 
-```sh
-node scripts/test-domain.mjs
-npm run typecheck
-npm run lint
-npm run build
-npm run preview
-npx playwright install chromium
-npm run test:e2e
-npm run test:visual -- --update-snapshots # first reviewed baseline only
-npm run test:visual                     # subsequent regression check
-npm run audit                          # starts its own optimized preview on port 4173
-# Linux fallback when the Playwright Chromium CDN is unavailable:
-PLAYWRIGHT_PRODUCTION=1 npm run test:ci
-npm run audit:ci
-```
+### Variáveis de ambiente
+| Variável | Padrão | Uso |
+|---|---|---|
+| `VITE_ENABLE_MOCKS` | `true` nos scripts `dev`/`build` | Liga a camada MSW (REST + Socket.IO). Inclusive na build publicada. |
+| `CHROMIUM_PATH` | — | Chromium alternativo para o Playwright. |
+| `CHROME_PATH` | — | Chrome alternativo para o Lighthouse. |
+| `AUDIT_URL`, `AUDIT_RUNS` | `http://localhost:4173`, `3` | Parâmetros da auditoria. |
 
-Playwright starts Vite automatically unless `PLAYWRIGHT_EXTERNAL_SERVER=1`. Set `PLAYWRIGHT_BASE_URL` to use another origin. HTML test output is in `playwright-report/`; failing traces are in `test-results/`. Delivered evidence copies are under `reports/e2e/` and `reports/visual/`. The 16 reference images are in `tests/visual.spec.ts-snapshots/`. The audit writes 12 HTML/JSON reports (2 pages × 2 profiles × 3 runs) plus medians, LCP, CLS and TBT to `reports/lighthouse/`. Set `CHROME_PATH` to an installed Chrome executable if needed. The audit starts/stops its own preview; set `AUDIT_EXTERNAL_SERVER=1` with `AUDIT_ORIGIN` to use an existing server.
+## Credenciais fictícias
+| Usuário | E-mail | Senha |
+|---|---|---|
+| Ana (carteiras principal e secundária, favorito `nft-002`) | `ana@example.com` | `Senha@123` |
+| Bruno (uma carteira, sem favoritos) | `bruno@example.com` | `Senha@456` |
 
-## Demo credentials
+Senhas são guardadas como hash SHA-256 com salt no banco simulado; nunca em claro.
+Cupons: `WELCOME10` (10%), `COLLECTOR25` (25%), `EXPIRED10` (expirado). CPF aceita qualquer número de 11 dígitos.
 
-| User | Email | Password |
-| --- | --- | --- |
-| Alex | alex@jungle.test | Jungle2026! |
-| Sam | sam@jungle.test | Jungle2026! |
+## Cenários dos mocks (seleção e reset)
+Os cenários são **determinísticos** (sem `Math.random`), combináveis e persistem no `localStorage` para sobreviver a refresh.
 
-Passwords in the simulated database are SHA-256 digests, not plaintext. This browser-only simulation is not production authentication. Alex starts with a fictional Ethereum wallet. A second sample address is `0x2222222222222222222222222222222222222222`. Coupon `JUNGLE10` discounts items by 10% (not the network fee).
+- **Pela URL:** `/?scenario=payment-declined` ou combinando `/?scenario=slow,order-timeout`. A URL reinicia o contador de falhas do cenário.
+- **Pelo console** (`window.__mocks`): `__mocks.setScenario(['price-changed'])`, `await __mocks.reset(['default'])` (restaura integralmente o banco e o cenário), `__mocks.scenarios` (lista).
 
-## Scenarios and reset
+| Cenário | O que simula |
+|---|---|
+| `default` | Sucesso, latência 80–200 ms, pedido confirmado após 1,5 s |
+| `empty` | Catálogo vazio |
+| `slow` | Latência fixa de 1,8 s (skeletons) |
+| `variable-latency` | Latência variável e **respostas fora de ordem** na busca |
+| `network-error` | Falha de conexão (`Failed to fetch`) no catálogo |
+| `server-error` | HTTP 500 no catálogo |
+| `flaky-catalog` | 503 nas 3 primeiras chamadas, depois recupera |
+| `session-expired` | Sessões vivem 15 s → `401 session_expired` |
+| `favorite-failure` | A primeira mutation de favorito falha (rollback) |
+| `payment-declined` | Pedido termina `declined` |
+| `order-timeout` | O pedido **é criado**, mas a resposta nunca chega; reenvio recupera o mesmo pedido pela chave de idempotência |
+| `price-changed` | Preço muda durante a compra → `409 quote_changed` |
+| `sold-out` | Edição esgota durante a compra → `409 availability_conflict` |
+| `wallet-rejected` | A carteira recusa a conexão |
+| `slow-settle` | Pedido fica pendente por 6 s |
 
-Use **Demo scenarios** at the bottom left. Scenario selection persists across refresh. **Reset all demo data** restores users, catalog, carts, wallets, orders and session and clears pending checkout attempts.
+Controles adicionais para demonstração/testes (todos passam pelo `socket.io-client` real): `__mocks.updateNft(id, {price, editions})`
+(altera o banco e emite `nft.updated`), `duplicateNftEvent`, `staleNftEvent`, `disconnectSocket`/`reconnectSocket`, `expireSessions`, `settleOrders`.
 
-- `standard`: normal successful operation; 18 artworks / 4 categories / 4 artists / 2 pages.
-- `empty`: empty catalog result.
-- `slow`: 2.2-second network delay and skeletons.
-- `out-of-order`: single-character searches take 1.7 seconds, longer searches 100 ms; previous requests are canceled through Axios signals.
-- `offline`: network errors; `server-error`: HTTP 503.
-- `expired-session`: expire the current session on the next business request. Select standard before signing in again.
-- `favorite-error`: favorite mutation fails, exposing optimistic rollback.
-- `invalid-coupon`, `expired-coupon`: deterministic coupon rejection.
-- `price-change`, `sold-out`: change the first cart item immediately before order creation, emit the Socket.IO update and reject the stale quote.
-- `order-timeout`: create an order, settle normally, but delay its response beyond the Axios timeout. **Recover purchase** resubmits the same idempotency key, returning the original order.
-- `payment-declined`: terminal payment rejection; cart retained.
-- `pending`: keep order pending. Disconnect or refresh; switch back to standard to settle the same order.
+### Reproduzindo os fluxos de falha
+1. Falha de rede/5xx: abra `/?scenario=network-error` → mensagem de erro + "Tentar novamente"; no console `__mocks.setScenario(['default'])` e clique em tentar novamente.
+2. Sessão expirada: `__mocks.expireSessions()` e navegue → volta ao login e **retorna à tela anterior** após entrar.
+3. Pedido duplicado/timeout: `?scenario=order-timeout` → monte um pedido e confirme; após o aviso, "Tentar novamente (sem duplicar)" recupera o mesmo pedido.
+4. Preço alterado em tempo real: com um item no checkout revisado, `__mocks.updateNft('nft-009', {price:'7.77'})` → banner exige nova confirmação.
+5. Interrupção de conexão com pedido pendente: `?scenario=slow-settle`, confirme a compra, `__mocks.disconnectSocket()`, recarregue a página, `__mocks.reconnectSocket()`.
 
-Manual event buttons target the selected NFT ID and travel through the real `socket.io-client`. They support price changes, sold-out editions, duplicate/old messages, socket disconnection and session expiry. REST and Socket.IO read the same simulated database. They do not write directly to UI setters or Query cache.
+## Testes
+`npm run test:e2e` executa **35 testes × 2 viewports (desktop 1440×900, mobile 390×844)** = 70 execuções, incluindo 4 de regressão visual por viewport.
+Cada teste reinicia o banco simulado e parte de storage vazio. Relatório HTML em `playwright-report/` (`npm run test:e2e:report`);
+traces/screenshots das falhas em `test-results/`. Baselines em `e2e/visual.spec.ts-snapshots/` (Linux/Chromium; para outro SO use `npm run test:e2e:update`).
 
-## Project map
+Cobertura: busca/filtros combinados/ordenação/paginação/histórico · detalhe direto e inexistente · cadastro/login/expiração/logout/troca de usuário ·
+favoritos com falha e rollback · carrinho (quantidades, remoção, cupom, refresh, login) · compra completa · pagamento recusado · clique repetido ·
+timeout + idempotência · perfil, avatar, senha, carteiras · preço/disponibilidade via Socket.IO · eventos duplicados/antigos · desconexão e retomada de pedido pendente ·
+teclado, foco em dialog, erros de formulário, overflow em 390/768/1440 · skeletons e recuperação · respostas fora de ordem · expiração de sessão durante o checkout com retomada.
 
-- `src/contracts.ts`: transport models and exact ETH decimal conversion.
-- `src/mocks/`: shared persisted simulation, REST MSW handlers, Socket.IO protocol binding.
-- `src/api.ts`: Axios client, error policy and QueryClient defaults.
-- `src/state.tsx`: sessions, cart keys, realtime lifecycle and notices.
-- `src/router.tsx`: TanStack route tree, URL search validation and private guards.
-- `src/screens/`: discovery, commerce, authentication and account flows.
-- `src/components/ui/`: locally owned shadcn-style Button/Dialog components using CVA, Slot and Radix Dialog.
-- `tests/`: interface-driven Chromium desktop/mobile flows and visual expectations.
-- `scripts/audit.mjs`: repeatable optimized-build Lighthouse runner.
+## Lighthouse
+`lighthouse/run.mjs` (versionado) audita Início e Detalhe, perfis mobile e desktop, **3 execuções cada** e reporta a mediana.
+Relatórios HTML/JSON por execução e `summary.json` (versões, ambiente) em `lighthouse/reports/`. Resultados e análise em [ARCHITECTURE.md](./ARCHITECTURE.md#performance-lighthouse).
 
-See `ARCHITECTURE.md` and `docs/API.md` for data policies, contracts and limitations.
+Medianas atuais: desktop Início **100**, Detalhe **99**; mobile Início **78**, Detalhe **81** (abaixo da meta de 90; causa e tentativas documentadas). Accessibility, Best Practices e SEO: **100** em todas.
+
+## Deploy
+A build publicada inclui o service worker do MSW (`/mockServiceWorker.js`) e o Socket.IO simulado, então todos os fluxos (inclusive tempo real) funcionam em produção sem backend.
+
+- **Vercel:** `npx vercel --prod` na raiz (ou importar o repositório: framework *Vite*, `npm run build`, saída `dist`). `vercel.json` já define o fallback de SPA e o cache de assets.
+- **Netlify (sem CLI):** `npm ci && npm run build` e arraste a pasta `dist/` em <https://app.netlify.com/drop>. O arquivo `public/_redirects` (copiado para `dist/`) faz o fallback `/* → /index.html 200`; arquivos existentes, como o service worker, continuam sendo servidos diretamente.
+- **Cloudflare Pages:** mesmo comando de build, saída `dist`; o `_redirects` também é respeitado.
+
+URL pública: _preencher após o deploy_.
+
+## Documentação
+Contratos REST e de eventos, política de sessão, carrinho, cache, reconciliação REST × Socket.IO, limitações e desvios do Figma: **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
